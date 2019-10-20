@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.dao.OwnerDAO">
+ 
+
+	<!-- 회원가입 -->
+	<insert id="signupOwner" >
+		insert into owner(o_id, bnum, o_pw, o_name, o_email, o_phone, o_date)
+		values(#{o_id}, #{bnum}, #{o_pw}, #{o_name}, #{o_email}, #{o_phone}, now())
+	</insert>
+	
+	<!-- 아이디 중복확인 -->
+	<select id="checkId" resultType="ownerVO">
+		select * from owner
+		where o_id = #{o_id}
+	</select>
+	
+	<!--email 중복 확인-->
+	<select id="checkEmail" resultType="ownerVO">
+		select * from owner
+		where o_email = #{o_email}
+	</select>
+	
+	<!-- email 인증 키 입력 -->
+	<update id="createO_key" parameterType="map">
+		update owner
+		set o_key = #{o_key}
+		where o_id = #{o_id}
+	</update>
+	
+	<!--email 인증키 확정 -->
+	<update id="keyConfirm" parameterType="map">
+		update owner
+		set o_key = 'y'
+		where o_id = #{o_id} and o_key = #{o_key}	
+	</update>
+	
+	
+	<!--로그인 -->
+	<select id="loginOwner"  resultType="OwnerVO">
+		select * from owner
+		where o_id = #{o_id} and o_pw = #{o_pw}
+	</select>
+	
+	<!-- 아이디 찾기  -->
+	<select id="findOwner"  parameterType="map" resultType="ownerVO">
+		select * from owner
+		where o_name = #{o_name} and bnum = #{bnum}
+	</select>
+	
+	<!-- 비번 찾기 -->
+	<select id="findPw"   parameterType="map" resultType="ownerVO">
+		select * from owner
+		where o_id = #{o_id} and o_email = #{o_email}
+	</select>
+	
+	
+	<!-- 개인정보 조회-->
+	<select id="selectOwner"  resultType="OwnerVO">
+		select * from owner
+		where o_id = #{o_id}	
+	</select>
+	
+	<!-- 개인정보 수정 -->
+	<update id="updateOwner">
+		update owner
+		set o_pw=#{o_pw}, o_email=#{o_email}, o_phone=#{o_phone}, o_name=#{o_name}
+		where o_id = #{o_id}
+	</update>
+	
+	<!-- 회원탈퇴 -->
+	<delete id="deleteOwner">
+ 		delete from owner
+ 		where o_id = #{o_id}
+ 	</delete>
+ 	
+ 	
+</mapper>

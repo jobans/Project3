@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="com.spring.dao.NoticeDAO">
+
+	<!--공지사항 등록-->
+	<insert id="regNotice">
+		insert into notice(bnum, n_subject, n_hits, n_contents, n_date)
+		values(#{bnum}, #{n_subject}, #{n_hits}, #{n_contents}, now())
+	</insert>
+	
+	<!-- 번호별 공지사항 보기-->
+	<select id="selectNotice" resultType="NoticeVO">
+		select * from notice
+		where n_no = #{n_no}
+	</select>
+	
+	<!-- 공지사항 정보 수정  -->
+	<update id="updateNotice">
+		update notice
+		set n_subject=#{n_subject}, n_contents=#{n_contents}
+		where n_no = #{n_no}
+	</update>
+	
+	<!-- 공지사항 삭제 -->
+	<delete id="deleteNotice">
+		delete from notice
+		where n_no = #{n_no}
+	</delete>
+	
+	<!-- 공지사항 리스트 -->
+ 	<select id="Noticelist" resultType="NoticeVO">
+ 	<![CDATA[
+ 		select *
+ 		from notice
+ 		where bnum = #{bnum}
+ 		order by n_no desc, n_date desc
+ 	]]>
+ 	</select>
+ 
+
+
+	<!-- 페이징 처리 -->
+	<!-- 사용자가 지정한 페이지와 보여지는 페이지당 글 개수 -->
+ 	<select id="listCriteria" resultType="NoticeVO">
+ 	<![CDATA[
+ 		select *
+ 		from notice
+ 		where n_no > 0
+ 		order by n_no desc, n_date desc
+ 		limit #{startPage}, #{numPerPage}
+	
+ 	]]>
+ 	</select>
+ 	
+ 	
+ 	<select id="countData" resultType="int">
+ 	<![CDATA[
+ 		select count(n_no)
+ 		from notice
+ 		where n_no > 0
+ 	
+ 	]]>	
+ 	</select>
+
+ </mapper>

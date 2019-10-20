@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.dao.ReviewDAO">
+
+	<insert id="insertReview">
+		insert into review(u_id, bnum, r_name, r_contents, r_date, r_redate, r_score)
+		values(#{u_id}, #{bnum}, #{r_name}, #{r_contents}, now(), now(), #{r_score})
+	
+	</insert>
+	
+	<!-- 번호별 리뷰 보기-->
+	<select id="selectReview" resultType="ReviewVO">
+		select * from Review
+		where r_no = #{r_no}
+	</select>
+	
+	<!-- 유저별 리뷰 보기-->
+	<select id="ReviewUlist" resultType="ReviewVO">
+		select db.c_name, r.r_no, r.u_id, r.bnum, r.r_name, r.r_score, r.bnum
+		from comdb as db
+		join review as r
+		on db.bnum = r.bnum
+		where  u_id = #{u_id}
+	</select>
+	
+	<!-- 리뷰 수정  -->
+	<update id="updateReview">
+		update Review
+		set u_id=#{u_id}, bnum=#{bnum}, r_name=#{r_name}, r_contents=#{r_contents}, r_redate=now() ,r_score = #{r_score}
+		where r_no = #{r_no}
+	</update>
+	
+	<!-- 리뷰 삭제 -->
+	<delete id="deleteReview">
+		delete from Review
+		where r_no = #{r_no}
+	</delete>
+	
+	
+	<select id="countReview" resultType="int">
+ 		select count(r_no)
+ 		from review
+ 		where bnum = #{bnum}
+ 	
+ 	</select>
+	
+	<!-- 리뷰 리스트 -->
+ 	<select id="Reviewlist" resultType="ReviewVO">
+ 	<![CDATA[
+ 		select *
+ 		from Review
+ 		order by r_no desc, r_date desc
+ 	]]>
+ 	</select>
+ 	<!-- 자동 별점 계산기 -->
+	<update id="autoScore">
+		update com set c_score =  
+    	(select round(sum(r_score)/count(bnum),1)
+		from review
+		where bnum = #{bnum})
+   		where bnum = #{bnum} 
+	</update>
+
+
+	<!-- 페이징 처리 -->
+	<!-- 사용자가 지정한 페이지와 보여지는 페이지당 글 개수 -->
+ 	<select id="listCriteria" resultType="ReviewVO">
+ 	<![CDATA[
+ 		select *
+ 		from Review
+ 		where r_no > 0
+ 		order by r_no desc, r_date desc
+ 		limit #{startPage}, #{numPerPage}
+	
+ 	]]>
+ 	</select>
+ 	
+ 	
+ 	<select id="countData" resultType="int">
+ 	<![CDATA[
+ 		select count(r_no)
+ 		from Review
+ 		where r_no > 0
+ 	
+ 	]]>	
+ 	</select>
+
+</mapper>  

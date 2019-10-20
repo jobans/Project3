@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.dao.BookingDAO">
+
+	<insert id="regbookig">
+		insert into booking(u_id, bnum, b_per, b_date)
+		values(#{u_id}, #{bnum}, #{b_per}, #{b_date})
+	</insert>
+	
+
+	<select id="selectBooking" resultType="BookingVO">
+		select * from booking
+		where b_no = #{b_no}
+	
+	</select>
+	
+	<update id="updateBooking">
+		update booking
+		set b_per=#{b_per}, b_date=#{b_date}, b_app=#{b_app}
+		where b_no=#{b_no}
+	
+	</update>
+	
+	<delete id="deleteBooking">
+		delete from booking
+		where b_no=#{b_no}
+	
+	</delete>
+	
+	<select id="BookingList">
+		select * from booking
+		where bnum=#{bnum}
+		order by b_date desc
+	
+	</select>
+	
+	<select id="Booking_uList">
+		select * from booking
+		where u_id=#{u_id}
+		order by b_date desc
+	
+	</select>
+	
+	<!-- 예약메일 보내기 -->
+	<select id="bookingOwnerMail" resultType="OwnerVO">
+		SELECT * FROM owner
+		where o_id = (
+			select o_id 
+			from com 
+			where bnum = #{bnum} )
+	</select>
+
+
+
+</mapper>
